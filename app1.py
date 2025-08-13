@@ -101,6 +101,36 @@ if uploaded_file:
     ax.legend()
     st.pyplot(fig)
 
+    # Calculate TotalSales
+    df['TotalSales'] = df['Quantity'] * df['UnitPrice']
+    st.title("Retail Sales Visualization")
+
+    # Pie chart: Top 5 products by sales
+    product_sales = df.groupby('Description')['TotalSales'].sum().sort_values(ascending=False)
+    top_products = product_sales.head(5)
+
+    fig, ax = plt.subplots()
+    ax.pie(top_products, labels=top_products.index, autopct='%1.1f%%', startangle=140)
+    ax.axis('equal')
+    st.subheader("Sales Distribution by Top 5 Products")
+    st.pyplot(fig)
+    
+    # ---------------------- Bar Chart: Top 10 Products by Revenue ----------------------
+    st.subheader("Top 10 Products by Sales Revenue")
+
+    # Group by product description
+    product_sales = df.groupby('Description')['TotalSales'].sum().sort_values(ascending=False)
+    top_products = product_sales.head(10)
+
+    # Plot bar chart
+    fig2, ax2 = plt.subplots()
+    top_products.plot(kind='barh', ax=ax2, color='skyblue')
+    ax2.set_xlabel('Revenue')
+    ax2.set_ylabel('Product')
+    ax2.set_title('Top 10 Products by Sales')
+    ax2.invert_yaxis()  # Highest on top
+    st.pyplot(fig2)
+    
     # Forecasted table
     st.subheader("🧾 Forecast Table")
     st.dataframe(forecast_df.rename(columns={
